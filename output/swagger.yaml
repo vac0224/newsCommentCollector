@@ -65,7 +65,7 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "search results matching criteria",
+            "description" : "Comments returned",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -79,13 +79,43 @@
           },
           "400" : {
             "description" : "parameter not found"
+          },
+          "401" : {
+            "description" : "unauthorized"
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "developers" ],
+        "summary" : "change comments",
+        "description" : "Changes comments in the list",
+        "operationId" : "changeComments",
+        "requestBody" : {
+          "description" : "Owner of the comment.",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/commentOwner"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Comments changed"
+          },
+          "400" : {
+            "description" : "invalid input, object invalid"
+          },
+          "409" : {
+            "description" : "Duplicate comment"
           }
         }
       },
       "post" : {
         "tags" : [ "developers" ],
         "summary" : "add comments",
-        "description" : "Adds a comment to list",
+        "description" : "Adds comments to list",
         "operationId" : "addComments",
         "requestBody" : {
           "description" : "Owner of the comment.",
@@ -108,18 +138,52 @@
             "description" : "Duplicate comment"
           }
         }
+      },
+      "delete" : {
+        "tags" : [ "developers" ],
+        "summary" : "delete a comment",
+        "description" : "Delete a comment from the list",
+        "operationId" : "deleteComment",
+        "parameters" : [ {
+          "name" : "deleteComment",
+          "in" : "query",
+          "description" : "pass a required comment ID to delete that comment",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "Comment deleted"
+          },
+          "400" : {
+            "description" : "invalid input, object invalid"
+          }
+        }
       }
     }
   },
   "components" : {
     "schemas" : {
       "commentOwner" : {
-        "required" : [ "name", "postedDate", "singleComment" ],
+        "required" : [ "avatar", "id", "name", "postedDate", "singleComment" ],
         "type" : "object",
         "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid",
+            "example" : "d290f1ee-6c54-4b01-90e6-d701748f0851"
+          },
           "name" : {
             "type" : "string",
             "example" : "John Doe"
+          },
+          "avatar" : {
+            "type" : "string",
+            "example" : "https://avatars.githubusercontent.com/u/101754834?s=16&v=4"
           },
           "postedDate" : {
             "type" : "string",
@@ -139,6 +203,16 @@
             "type" : "string",
             "format" : "text",
             "example" : "I like this news."
+          }
+        }
+      },
+      "deleteComment" : {
+        "required" : [ "id" ],
+        "properties" : {
+          "content" : {
+            "type" : "string",
+            "format" : "uuid",
+            "example" : "d290f1ee-6c54-4b01-90e6-d701748f0851"
           }
         }
       }
