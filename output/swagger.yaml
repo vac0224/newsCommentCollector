@@ -1,0 +1,147 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "title" : "News Comments API",
+    "description" : "This API collects news comments and formats them for display on a web page.",
+    "contact" : {
+      "email" : "victorchapel@gmail.com"
+    },
+    "license" : {
+      "name" : "Apache 2.0",
+      "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version" : "1.0.0"
+  },
+  "servers" : [ {
+    "url" : "https://virtserver.swaggerhub.com/VICTORCHAPEL/news-comments/1.0.0",
+    "description" : "SwaggerHub API Auto Mocking"
+  } ],
+  "tags" : [ {
+    "name" : "developers",
+    "description" : "Operations available to all Developers."
+  } ],
+  "paths" : {
+    "/comments" : {
+      "get" : {
+        "tags" : [ "developers" ],
+        "summary" : "collect comments",
+        "description" : "By passing in a news site URL and parameters, you can collect the comment text and date, and the name of the person who posted the comment.\n",
+        "operationId" : "collectComments",
+        "parameters" : [ {
+          "name" : "collectComments",
+          "in" : "query",
+          "description" : "pass a required URL of a news site with comments",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "skip",
+          "in" : "query",
+          "description" : "number of comments to skip for pagination",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "maximum number of comments to return",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "maximum" : 100,
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "search results matching criteria",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/CollectComments"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "parameter not found"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "developers" ],
+        "summary" : "add comments",
+        "description" : "Adds a comment to list",
+        "operationId" : "addComments",
+        "requestBody" : {
+          "description" : "Owner of the comment.",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/commentOwner"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Comment added"
+          },
+          "400" : {
+            "description" : "invalid input, object invalid"
+          },
+          "409" : {
+            "description" : "Duplicate comment"
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "commentOwner" : {
+        "required" : [ "name", "postedDate", "singleComment" ],
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string",
+            "example" : "John Doe"
+          },
+          "postedDate" : {
+            "type" : "string",
+            "format" : "date-time",
+            "example" : "2016-08-29T09:12:33.001Z"
+          },
+          "singleComment" : {
+            "$ref" : "#/components/schemas/singleComment"
+          }
+        }
+      },
+      "singleComment" : {
+        "required" : [ "content" ],
+        "type" : "object",
+        "properties" : {
+          "content" : {
+            "type" : "string",
+            "format" : "text",
+            "example" : "I like this news."
+          }
+        }
+      }
+    }
+  }
+}
